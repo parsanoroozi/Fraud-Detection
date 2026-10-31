@@ -1,0 +1,13 @@
+[Unit]
+Description=Fraud Detection (spam) FastAPI app
+After=network.target
+
+[Service]
+User=YOUR_USER
+WorkingDirectory=/home/YOUR_USER/app/src/Fraud-Detection/backend
+# Only reachable from the server itself; NGINX exposes it to the internet
+ExecStart=/home/YOUR_USER/app/src/Fraud-Detection/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8001
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
