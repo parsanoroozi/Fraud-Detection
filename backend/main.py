@@ -31,7 +31,13 @@ def predict(email: EmailIn):
     # plain text -> CountVectorizer -> model -> 1 = spam
     tokens = cv.transform([email.text])
     prediction = int(clf.predict(tokens)[0])
-    return {"prediction": prediction, "label": "spam" if prediction == 1 else "not spam"}
+    # probability of the predicted class, 0..1
+    confidence = float(clf.predict_proba(tokens)[0].max())
+    return {
+        "prediction": prediction,
+        "label": "spam" if prediction == 1 else "not spam",
+        "confidence": round(confidence, 4),
+    }
 
 
 # Serve the built React app (present inside the Docker image)
