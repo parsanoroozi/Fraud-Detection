@@ -76,5 +76,9 @@ jobs:
             git pull
             venv/bin/pip install -q -r backend/requirements.txt
             echo ${{secrets.PROD_PASSWORD}} | sudo -S systemctl restart fraud-detection
-            sleep 2
-            curl -fsS http://localhost:8001/api/health
+            # the app needs a few seconds to load the model
+            for i in $(seq 1 30); do
+              curl -fsS http://localhost:8001/api/health && exit 0
+              sleep 1
+            done
+            echo "app did not come up"; exit 1
