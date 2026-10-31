@@ -41,6 +41,21 @@ browser ──https──▶ NGINX (:443) ──▶ uvicorn 127.0.0.1:8001 (syst
 
 ## VPS setup (one time)
 
+### Quick way: one script
+
+First point your domain's DNS **A record** to the VPS IP (see step 4 below). Then SSH into the VPS and run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/parsanoroozi/Fraud-Detection/main/deploy/setup-vps.sh -o setup-vps.sh
+bash setup-vps.sh spam.example.com you@example.com
+```
+
+It does steps 1–7 below: packages, clone, systemd service, NGINX, firewall (keeps your SSH
+port open) and HTTPS. The email is optional (Let's Encrypt expiry notices); by running it you
+accept Let's Encrypt's terms. It's safe to run again. Then add the GitHub secrets (step 8).
+
+### Manual way: step by step
+
 All commands run on the VPS (Ubuntu/Debian) as your normal user.
 First set your domain once in the terminal (used by the commands below):
 
