@@ -7,22 +7,57 @@
 
 ## Run locally
 
-```bash
+You need two terminals: one for the backend, one for the frontend.
+
+### First time only: install
+
+```powershell
 cd backend
 python -m venv .venv
-.venv/Scripts/pip install -r requirements.txt   # Linux/mac: .venv/bin/pip
-.venv/Scripts/python -m uvicorn main:app --port 8000
+.venv\Scripts\pip install -r requirements.txt
+cd ..\frontend
+npm install
 ```
 
-```bash
+(Linux/mac: use `.venv/bin/pip` instead of `.venv\Scripts\pip`.)
+
+### Every time: start
+
+Terminal 1, backend (http://localhost:8000):
+
+```powershell
+cd backend
+.venv\Scripts\python -m uvicorn main:app --port 8000 --reload
+```
+
+Terminal 2, frontend (http://localhost:5173):
+
+```powershell
 cd frontend
-npm install
 npm run dev
 ```
 
-Open http://localhost:5173 (Vite forwards `/api` to the backend).
+Open http://localhost:5173. Vite forwards `/api` calls to the backend on port 8000.
+`--reload` restarts the backend automatically when you edit Python files.
 
-Run the backend tests: `cd backend && pytest` (needs `pip install pytest httpx`).
+### Tests
+
+```powershell
+cd backend
+.venv\Scripts\pip install pytest httpx
+.venv\Scripts\python -m pytest
+```
+
+### Troubleshooting
+
+- **`InconsistentVersionWarning ... from version 0.23.1`**: harmless. The models were saved with an
+  old scikit-learn but load and predict correctly on the current one.
+- **`Unable to copy ... venvlauncher.exe`** when running `python -m venv .venv`: `.venv` already
+  exists and something (usually a running backend) is using it. Skip that step, or stop the
+  backend first.
+- **`[Errno 10048] ... ('127.0.0.1', 8000)`** or Vite says **`Port 5173 is in use`**: the app is
+  already running in another terminal. Stop it with `Ctrl+C` there, or find what uses the port:
+  `Get-NetTCPConnection -LocalPort 8000 | Select OwningProcess` then `Stop-Process -Id <id>`.
 
 ## CI/CD (GitHub Actions → VPS)
 
