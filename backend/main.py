@@ -23,7 +23,7 @@ class EmailIn(BaseModel):
 
 @app.get("/api/health")
 def health():
-    return {"status": 'ok'}
+    return {"status": "ok"}
 
 
 @app.post("/api/predict")
